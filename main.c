@@ -16,6 +16,22 @@ int main(int argc, char *argv[]) {
 //----------------------FOR DEBBBUGGING---------------------//
     //tokenize the expression and check for errors
     if(tokenize(expression, tokens, &tokenCount)){
+
+        switch(evalExpressionType(tokens, tokenCount)) {
+            case 1:
+                printf("The input is in prefix notation.\n");
+                break;
+            case 2:
+                printf("The input is in infix notation.\n");
+                break;
+            case 3:
+                printf("The input is in postfix notation.\n");   
+                break; 
+            default:
+                printf("Unknown notation.\n");
+                break;
+        }
+
         printf("Tokenization was successful!\n");
         printf("Tokens:\n");
 
@@ -30,11 +46,11 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        TreeNode *root = buildExpressionTree(tokens, tokenCount);
+        TreeNode *root = buildPostfix(tokens, tokenCount);  //testing for postfix input
 
         Token result[MAX_TOKENS];
         int index = 0;
-        PostfixTraversal(root, result, &index);
+        InfixTraversal(root, result, &index);   //postfix to infix
         printf("Postfix Expression:\n");
         for(int i = 0; i < index; i++){
             printf("%c ", result[i].value);

@@ -17,5 +17,6 @@ typedef struct {
 } Token;
 
 int tokenize(const char *expr, Token tokens[], int *tokenCount);
+int evalExpressionType(Token tokens[], int tokenCount);
 
 #endif
