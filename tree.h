@@ -10,9 +10,12 @@ typedef struct TreeNode {
 } TreeNode;
 
 TreeNode* buildExpressionTree(Token tokens[], int tokenCount);
+TreeNode* buildPrefix(Token tokens[], int tokenCount);
+TreeNode* buildPostfix(Token tokens[], int tokenCount);
 TreeNode* createNode(Token token);
 void freeTree(TreeNode *node);
 void PostfixTraversal(TreeNode *node, Token output[], int *index);
-
+void PrefixTraversal(TreeNode *node, Token output[], int *index);
+void InfixTraversal(TreeNode *node, Token output[], int *index);
 #endif
 

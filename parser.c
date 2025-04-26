@@ -38,3 +38,23 @@ int tokenize(const char *expr, Token tokens[], int *tokenCount) {
     *tokenCount = count;
     return 1;  // Success
 }
+
+//simply checks the type of notation input is written in
+//had no idea why I wrote this lol, i mistook this for an evaluator
+//as in 'evaluate'/'identify' the type of expression
+//think imma leave it in here though just in case
+int evalExpressionType(Token tokens[], int tokenCount) {
+    for (int i = 0; i < tokenCount; i++) {
+        
+        if (tokens[i].type == OPERATOR)
+            return 1;
+            
+        if (i + 2 < tokenCount && tokens[i].type == OPERAND &&
+            tokens[i + 1].type == OPERATOR && tokens[i + 2].type == OPERAND)
+            return 2;
+
+        if (tokens[i].type == OPERAND && tokens[i].type == OPERAND)
+            return 3;
+        
+    }
+}

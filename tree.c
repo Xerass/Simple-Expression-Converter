@@ -151,3 +151,83 @@ void PostfixTraversal(TreeNode *node, Token output[], int *index) {
         output[(*index)++] = node->token;
     }
 }
+//added prefix traversal
+void PrefixTraversal(TreeNode *node, Token output[], int *index) {
+    if (node == NULL)
+        return;
+    else {
+        output[(*index)++] = node->token;
+        PrefixTraversal(node->left, output, index);
+        PrefixTraversal(node->right, output, index);
+    }
+}
+//added infix traversal
+void InfixTraversal(TreeNode *node, Token output[], int *index) {
+    if (node == NULL)
+        return;
+    else {
+        InfixTraversal(node->left, output, index);
+        output[(*index)++] = node->token;
+        InfixTraversal(node->right, output, index);
+    }
+}
+
+//builds an expression tree for conversions from prefix notation
+TreeNode* buildPrefix(Token tokens[], int tokenCount) {
+    Stack operandStack;
+    initStack(&operandStack);
+
+    for (int i = tokenCount -1 ; i >= 0; i--) {
+        Token token = tokens[i];
+        if(token.type == OPERAND){
+
+            TreeNode *node = createNode(token);
+            pushStack(&operandStack, node); 
+
+        } else if (token.type == OPERATOR){
+            
+            TreeNode *operatorNode = createNode(token);
+            TreeNode *leftNode = popStack(&operandStack);
+            TreeNode *rightNode = popStack(&operandStack);
+
+            operatorNode->left = leftNode;
+            operatorNode->right = rightNode;
+
+            pushStack(&operandStack, operatorNode);
+
+        }
+    }
+    
+    return popStack(&operandStack);
+}
+
+//tree builder for conversions from postfix notation
+TreeNode* buildPostfix(Token tokens[], int tokenCount) {
+
+    Stack operandStack;
+    initStack(&operandStack);
+
+    for (int i = 0; i < tokenCount; i++) {
+        Token token = tokens[i];
+
+        if (token.type == OPERAND) {
+            TreeNode *node = createNode(token);
+            pushStack(&operandStack, node);
+        }
+        else if (token.type == OPERATOR) {
+
+            TreeNode *operatorNode = createNode(token);
+            TreeNode *rightNode = popStack(&operandStack);
+            TreeNode *leftNode = popStack(&operandStack);
+            
+            operatorNode->left = leftNode;
+            operatorNode->right = rightNode;
+
+            pushStack(&operandStack, operatorNode);
+
+        }
+
+    }
+
+    return popStack(&operandStack);
+}
