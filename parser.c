@@ -15,7 +15,7 @@ int tokenize(const char *expr, Token tokens[], int *tokenCount) {
             tokens[count].type = OPERAND;
             tokens[count].value = c;
             count++;
-        } else if (c == '+' || c == '-' || c == '*' || c == '/') {
+        } else if (c == '+' || c == '-' || c == '*' || c == '/' || c == '^') {
             //if it is one of these, it must be an operator
             tokens[count].type = OPERATOR;
             tokens[count].value = c;
