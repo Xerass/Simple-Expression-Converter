@@ -57,6 +57,8 @@ int precedence(char operator){
         case '*':
         case '/':
             return 2;
+        case '^': //added exponentiation operator
+            return 3;
         default:
             return 0; //invalid operator
     }
