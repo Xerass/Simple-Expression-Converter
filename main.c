@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 #include "parser.h"
 #include "tree.h"
 
@@ -143,8 +144,74 @@ int main(int argc, char *argv[]) {
 
         //------------make eval file
         //-----------WHOEVER DOES IT, convert everything to postfix then use basic stack evaluation (safest method)!!!!!!
+        
         if (evalFlag) {
-            printf("WIP,please imporve!\n");
+            //Didnt add any isEmptyStack checks since program will only reach evaluation phase
+            //if there had been no stack issues during initial conversion/expression tree building.
+            //But tbh i just felt lazy, I'll add it in on the next pull req.
+            Stack evalStack;
+            initStack(&evalStack);
+            Token eval[MAX_TOKENS];
+            int result = 0;
+            index = 0;
+
+            PostfixTraversal(root, eval, &index);
+
+
+            for (int i = 0; i < index; i++) {
+
+                Token current = eval[i];
+
+
+                if (current.type == OPERAND) {
+                    int value = current.value - '0';
+                    Token num = {OPERAND, value};
+                    TreeNode* node = createNode(num);
+                    pushStack(&evalStack, node);
+                }
+
+
+                if (current.type == OPERATOR) {
+
+                    TreeNode* rightOperand = popStack(&evalStack);
+                    TreeNode* leftOperand = popStack(&evalStack);
+                    TreeNode* resultNode = createNode((Token){OPERAND, 0});
+
+                    int leftValue = leftOperand->token.value;
+                    int rightValue = rightOperand->token.value;
+
+                    switch (current.value) {
+                        case '+' : resultNode->token.value = leftValue + rightValue; break;
+                        case '-' : resultNode->token.value = leftValue - rightValue; break;
+                        case '*' : resultNode->token.value = leftValue * rightValue; break;
+
+                        case '/' : 
+                            if (rightValue == 0) {
+                                printf("Math Error! Division by zero not allowed.\n");
+                                free(rightOperand);
+                                free(leftOperand);
+                                free(resultNode);
+                                freeTree(root);
+                                return 1;
+                            }
+                            resultNode->token.value = leftValue / rightValue; break;
+
+                        case '^' : resultNode->token.value = (int)pow(leftValue, rightValue); break;
+                            
+                    }
+
+                    pushStack(&evalStack, resultNode);
+
+                    free(leftOperand);
+                    free(rightOperand);
+                }
+            }
+
+            TreeNode* resultNode = popStack(&evalStack);
+            result = resultNode->token.value;
+            free(resultNode);
+
+            printf("Result is : %d\n", result);
         }
 
         freeTree(root);

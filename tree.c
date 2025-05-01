@@ -2,13 +2,6 @@
 #include <stdlib.h>
 #include "tree.h"
 
-#define MAX_STACK_SIZE 100
-
-typedef struct {
-    TreeNode *nodes[MAX_STACK_SIZE];
-    int top;
-} Stack;
-
 void initStack(Stack *stack) {
     stack->top = -1;
 }
@@ -46,7 +39,6 @@ TreeNode* peekStack(Stack *stack) {
         return NULL;
     }
 }
-
 
 int precedence(char operator){
     //returns the precedence of an operator
