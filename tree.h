@@ -9,7 +9,7 @@ typedef struct TreeNode {
     struct TreeNode *right;
 } TreeNode;
 
-TreeNode* buildExpressionTree(Token tokens[], int tokenCount);
+TreeNode* buildInfix(Token tokens[], int tokenCount);
 TreeNode* buildPrefix(Token tokens[], int tokenCount);
 TreeNode* buildPostfix(Token tokens[], int tokenCount);
 TreeNode* createNode(Token token);
