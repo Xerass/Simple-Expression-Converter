@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include "tree.h"
 
 void initStack(Stack *stack) {
@@ -56,6 +57,10 @@ int precedence(char operator){
     }
 }
 
+bool isRightAssociative(char operator){
+    return (operator == '^');  
+}
+
 TreeNode* createNode(Token token){
     //creates a lone node
     TreeNode *node = (TreeNode *)malloc(sizeof(TreeNode));
@@ -68,86 +73,125 @@ TreeNode* createNode(Token token){
     node->right = NULL;
     return node;
 }
+/**
+Algo Overview:
+ Iterate through each token:
+ OPERAND: push a new node onto operandStack.
+ OPERATOR: pop and build subtrees for any operators on operatorStack with >= precedence, then push this operator.
+ LPAREN: push onto operatorStack to denote a sub-expression start.
+ RPAREN: pop and build subtrees until matching LPAREN is found.
+ 2. After all tokens, pop any remaining operators to build the final tree.
+ 3. If any stray parentheses remain, report mismatches.
+ */
 
-TreeNode* buildInfix(Token tokens[], int tokenCount){
+TreeNode* buildInfix(Token tokens[], int tokenCount) {
     Stack operandStack, operatorStack;
     initStack(&operandStack);
-    initStack(&operatorStack);  
+    initStack(&operatorStack);
+    int operandCount = 0;
+    TreeNode *root = NULL;
 
-    int operandCount = 0; 
-
-    for (int i = 0; i < tokenCount; i++){
+    for (int i = 0; i < tokenCount; i++) {
         Token token = tokens[i];
-        if(token.type == OPERAND){
-            //if token type is an operand, create a node and push it to the operand stack
-            TreeNode *node = createNode(token);
-            pushStack(&operandStack, node); 
-            operandCount++; // one operand added
-        } else if (token.type == OPERATOR){
-            //it it is an operator, pop two nodes from the operand stack
-            //and create a new node with the operator as the root
-            //and the two popped nodes as the left and right children
 
-            //key point in the shunting yard algorithm. If we push a lower precedence operator onto the stack, we need to pop the higher precedence operators first
-            while(!isStackEmpty(&operatorStack) && precedence(peekStack(&operatorStack)->token.value) >= precedence(token.value)){
-                TreeNode *operatorNode = popStack(&operatorStack);
-                
+        if (token.type == LPAREN) {
+            // Start of sub-expression
+            TreeNode *p = createNode(token);
+            pushStack(&operatorStack, p);
+            continue;
+        }
+        else if (token.type == RPAREN) {
+            // End of sub-expression: pop until matching LPAREN
+            while (!isStackEmpty(&operatorStack) &&
+                   peekStack(&operatorStack)->token.type != LPAREN) {
+                TreeNode *opNode = popStack(&operatorStack);
                 if (operandCount < 2) {
-                    printf("Error: Not enough operands for operator '%c'\n", operatorNode->token.value);
+                    printf("Error: Not enough operands for operator '%c'\n",
+                           opNode->token.value);
                     return NULL;
                 }
-
-                //pop two nodes from the operand stack
-                TreeNode *rightNode = popStack(&operandStack);
-                TreeNode *leftNode = popStack(&operandStack);
+                // Build subtree: right and left children
+                TreeNode *right = popStack(&operandStack);
+                TreeNode *left  = popStack(&operandStack);
                 operandCount -= 2;
-
-                //assign left and right children to the operator node
-                operatorNode->left = leftNode;
-                operatorNode->right = rightNode;
-
-                //push the operator node back onto the operand stack
-                pushStack(&operandStack, operatorNode);
-                operandCount++; // result of operator becomes a new operand
+                opNode->left  = left;
+                opNode->right = right;
+                pushStack(&operandStack, opNode);
+                operandCount++;
             }
-
-            //push the current operator onto the operator stack
-            TreeNode *operatorNode = createNode(token);
-            pushStack(&operatorStack, operatorNode);
+            if (isStackEmpty(&operatorStack)) {
+                printf("Error: Mismatched parentheses\n");
+                return NULL;
+            }
+            // Discard the matching LPAREN node
+            TreeNode *leftParenNode = popStack(&operatorStack);
+            free(leftParenNode);
+            continue;
+        }
+        else if (token.type == OPERATOR) {
+            // Handle preceding operators of higher/equal precedence
+            while (!isStackEmpty(&operatorStack) &&
+                   precedence(peekStack(&operatorStack)->token.value) >=
+                   precedence(token.value)) {
+                TreeNode *opNode = popStack(&operatorStack);
+                if (operandCount < 2) {
+                    printf("Error: Not enough operands for operator '%c'\n",
+                           opNode->token.value);
+                    return NULL;
+                }
+                TreeNode *right = popStack(&operandStack);
+                TreeNode *left  = popStack(&operandStack);
+                operandCount -= 2;
+                opNode->left  = left;
+                opNode->right = right;
+                pushStack(&operandStack, opNode);
+                operandCount++;
+            }
+            // Push this operator for later
+            TreeNode *p = createNode(token);
+            pushStack(&operatorStack, p);
+            continue;
+        }
+        else if (token.type == OPERAND) {
+            // Operand goes directly onto the operand stack
+            TreeNode *p = createNode(token);
+            pushStack(&operandStack, p);
+            operandCount++;
+            continue;
         }
     }
 
-    //after all tokens have been processed, pop any remaining operators from the operator stack
-    while(!isStackEmpty(&operatorStack)){
-        TreeNode *operatorNode = popStack(&operatorStack);
-
-        if (operandCount < 2) {
-            printf("Error: Not enough operands for operator '%c'\n", operatorNode->token.value);
+    // Pop any remaining operators to finish tree
+    while (!isStackEmpty(&operatorStack)) {
+        TreeNode *opNode = popStack(&operatorStack);
+        if (opNode->token.type == LPAREN || opNode->token.type == RPAREN) {
+            // stray parenthesis
+            printf("Error: Mismatched parentheses\n");
             return NULL;
         }
-
-        TreeNode *rightNode = popStack(&operandStack);
-        TreeNode *leftNode = popStack(&operandStack);
+        if (operandCount < 2) {
+            printf("Error: Not enough operands for operator '%c'\n",
+                   opNode->token.value);
+            return NULL;
+        }
+        TreeNode *right = popStack(&operandStack);
+        TreeNode *left  = popStack(&operandStack);
         operandCount -= 2;
-
-        operatorNode->left = leftNode;
-        operatorNode->right = rightNode;
-
-        //push the operator node back onto the operand stack
-        pushStack(&operandStack, operatorNode);
-        operandCount++; // one result pushed back
+        opNode->left  = left;
+        opNode->right = right;
+        pushStack(&operandStack, opNode);
+        operandCount++;
     }
 
-    //the final node of the operand stack is root node of the expression
-    if (operandCount != 1) {
-        printf("Error: Excess operands or operators\n");
-        return NULL;
+    if (operandCount == 1) {
+        root = popStack(&operandStack);
+    } else if (operandCount != 1) {
+    printf("Error: Malformed expression (excess operands/operators)\n");
+    return NULL;
     }
 
-    return popStack(&operandStack);
+    return root;
 }
-
-
 
 void freeTree(TreeNode *node) {
     if (node != NULL) {
@@ -181,15 +225,45 @@ void PrefixTraversal(TreeNode *node, Token output[], int *index) {
     }
 }
 //added infix traversal
-void InfixTraversal(TreeNode *node, Token output[], int *index) {
-    if (node == NULL)
-        return;
-    else {
-        InfixTraversal(node->left, output, index);
+void InfixTraversal(TreeNode *node,Token output[], int *index,int parentPrec,bool isRightChild){
+    if (!node) return;
+
+    if (node->token.type == OPERATOR) {
+        int myPrec = precedence(node->token.value);
+
+        // decide if we need parentheses around this subtree
+        bool needParen = false;
+        if (myPrec < parentPrec) {
+            needParen = true;
+        }
+        else if (myPrec == parentPrec) {
+            // for left-assoc ops, right child at same prec needs parens
+            // for right-assoc ops, left child at same prec needs parens
+            if (isRightChild && !isRightAssociative(node->token.value))
+                needParen = true;
+            if (!isRightChild &&  isRightAssociative(node->token.value))
+                needParen = true;
+        }
+
+        if (needParen) {
+            output[(*index)++] = (Token){ LPAREN, '(' };
+        }
+
+        // Recurse into children, passing our own precedence and side
+        InfixTraversal(node->left,  output, index, myPrec, false);
         output[(*index)++] = node->token;
-        InfixTraversal(node->right, output, index);
+        InfixTraversal(node->right, output, index, myPrec, true);
+
+        if (needParen) {
+            output[(*index)++] = (Token){ RPAREN, ')' };
+        }
+    }
+    else {
+        // Simple operand
+        output[(*index)++] = node->token;
     }
 }
+
 
 //builds an expression tree for conversions from prefix notation
 TreeNode* buildPrefix(Token tokens[], int tokenCount) {

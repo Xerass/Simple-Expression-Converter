@@ -8,7 +8,9 @@
 // and single-digit operands (0-9). It ignores whitespace and checks for invalid characters.
 typedef enum {
     OPERAND,
-    OPERATOR
+    OPERATOR,
+    LPAREN,    // '('
+    RPAREN     // ')'
 } TokenType;
 
 typedef struct {

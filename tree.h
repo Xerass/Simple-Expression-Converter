@@ -30,6 +30,7 @@ TreeNode* createNode(Token token);
 void freeTree(TreeNode *node);
 void PostfixTraversal(TreeNode *node, Token output[], int *index);
 void PrefixTraversal(TreeNode *node, Token output[], int *index);
-void InfixTraversal(TreeNode *node, Token output[], int *index);
+void InfixTraversal(TreeNode *node,Token output[], int *index,int parentPrec,bool isRightChild);
+
 #endif
 

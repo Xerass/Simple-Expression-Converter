@@ -4,12 +4,26 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <math.h>
+#include <ctype.h>
 #include "parser.h"
 #include "tree.h"
 
 void printHelp(){
-    printf("WIP, please improve\n");
-    printf("Format: ./prog \"expression\" [pre|post|in] [-e]\n");
+    printf("Usage: ./prog \"expression\" [pre|in|post] [-e]\n\n");
+    printf("  expression   Arithmetic expression using:\n");
+    printf("               - digits (0-9)\n");
+    printf("               - single-letter vars (a-z, A-Z)\n");
+    printf("               - operators: + - * / ^\n");
+    printf("               - parentheses: ()\n\n");
+    printf("  pre          Convert to prefix notation\n");
+    printf("  in           Convert to fully parenthesized infix\n");
+    printf("  post         Convert to postfix notation\n");
+    printf("  -e           Evaluate numeric expressions only\n\n");
+    printf("Examples:\n");
+    printf("  ./prog \"3+4*2\" post      -> 3 4 2 * +\n");
+    printf("  ./prog \"(a+b)*c\" pre    -> * + a b c\n");
+    printf("  ./prog \"3+(4*2)\" in -e  -> 11\n");
+    printf("  ./prog                 (no args shows this help)\n");
 }
 
 void printGuide(){
@@ -17,7 +31,22 @@ void printGuide(){
     printf("Format: ./prog \"expression\" [pre|post|in] [-e]\n");
 }
 
+void printType(int t) {
+  switch(t) {
+    case 1: puts("The input is in prefix notation."); break;
+    case 2: puts("The input is in infix notation.");  break;
+    case 3: puts("The input is in postfix notation.");break;
+    default: puts("Unknown notation.");               break;
+  }
+}
+
 int main(int argc, char *argv[]) {
+
+    if (argc == 1) {
+        printHelp();
+        return 0;
+    }
+
     if (argc == 2){
         if(strcmp(argv[1], "--help") == 0){
             printHelp();
@@ -36,21 +65,7 @@ int main(int argc, char *argv[]) {
         if(tokenize(expression, tokens, &tokenCount)){
             
             int type = evalExpressionType(tokens, tokenCount);
-            switch(type) {
-                case 1:
-                    printf("The input is in prefix notation.\n");
-                    break;
-                case 2:
-                    printf("The input is in infix notation.\n");
-                    break;
-                case 3:
-                    printf("The input is in postfix notation.\n");   
-                    break; 
-                default:
-                    printf("Unknown notation.\n");
-                    return 1;
-            }
-            
+            printType(type);            
             TreeNode *root = NULL;
 
             switch(type){
@@ -94,6 +109,7 @@ int main(int argc, char *argv[]) {
         }
 
         int inputType = evalExpressionType(tokens, tokenCount);
+        printType(inputType);
         int targetType = 0;
 
         if (strcmp(targetTypeStr, "pre") == 0) {
@@ -107,7 +123,7 @@ int main(int argc, char *argv[]) {
             return 1;
         }
 
-        if (inputType == targetType){
+        if (inputType == targetType && !evalFlag){
             printf("Input and target types are the same. No conversion needed!\n");
             return 0;
         }
@@ -133,7 +149,7 @@ int main(int argc, char *argv[]) {
         printf("Converted Expression:\n");
         switch(targetType){
             case 1: PrefixTraversal(root, result, &index); break;
-            case 2: InfixTraversal(root, result, &index); break;
+            case 2: InfixTraversal(root, result, &index, 0, false); break;
             case 3: PostfixTraversal(root, result, &index); break;
         }
 
@@ -146,6 +162,14 @@ int main(int argc, char *argv[]) {
         //-----------WHOEVER DOES IT, convert everything to postfix then use basic stack evaluation (safest method)!!!!!!
         
         if (evalFlag) {
+
+        for (int i = 0; i < tokenCount; i++) {
+            if (tokens[i].type == OPERAND && isalpha(tokens[i].value)) {
+                printf("Error: Cannot evaluate expression with variables.\n");
+                return 1;
+            }
+        }
+            
             //Didnt add any isEmptyStack checks since program will only reach evaluation phase
             //if there had been no stack issues during initial conversion/expression tree building.
             //But tbh i just felt lazy, I'll add it in on the next pull req.
