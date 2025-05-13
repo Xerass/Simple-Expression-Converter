@@ -14,13 +14,13 @@ Before compiling or running the program, make sure the following tools are insta
 1.   **Open Terminal**
 
 #### On Linux:  
-	To do that, press the Ctrl + Alt + T.
+To do that, press the Ctrl + Alt + T.
 
 #### On Windows:  
-	To do that, press the Windows key + X, then select PowerShell or Terminal.
+To do that, press the Windows key + X, then select PowerShell or Terminal.
 
 #### On MacOS:  
-	To do that, Cmd + Space to open Spotlight search, then type "terminal" and press Enter.
+To do that, Cmd + Space to open Spotlight search, then type "terminal" and press Enter.
 
 2.   **GCC Installation**  
 
@@ -41,7 +41,7 @@ gcc --version
 ```
 
 #### On Windows:
-    Install GCC by downloading [MSYS2](https://www.msys2.org) and follow the instructions on their website.
+Install GCC by downloading [MSYS2](https://www.msys2.org) and follow the instructions on their website.
 
 #### On MacOS:
 -   Install Homebrew and follow further instructions on-screen:
@@ -77,13 +77,13 @@ C:msys64mingw64bin
 1.   **Open Terminal**
 
 #### On Linux:  
-	To do that, press the Ctrl + Alt + T.
+To do that, press the Ctrl + Alt + T.
 
 #### On Windows:  
-	To do that, press the Windows key + X, then select PowerShell or Terminal.
+To do that, press the Windows key + X, then select PowerShell or Terminal.
 
 #### On MacOS:  
-	To do that, Cmd + Space to open Spotlight search, then type "terminal" and press Enter.
+To do that, Cmd + Space to open Spotlight search, then type "terminal" and press Enter.
 
 2.   **Git Installation**  
 
@@ -127,13 +127,13 @@ git --version
 1.   **Open Terminal**
 
 #### On Linux:  
-	To do that, press the Ctrl + Alt + T.
+To do that, press the Ctrl + Alt + T.
 
 #### On Windows:  
-	To do that, press the Windows key + X, then select PowerShell or Terminal.
+To do that, press the Windows key + X, then select PowerShell or Terminal.
 
 #### On MacOS:  
-	To do that, Cmd + Space to open Spotlight search, then type "terminal" and press Enter.
+To do that, Cmd + Space to open Spotlight search, then type "terminal" and press Enter.
 
 2.    **Program Compilation**
 
@@ -142,7 +142,7 @@ git --version
 ```
 cd path-toSimple-Expression-Converter
 ```
-	Replace path-to with the path where the project is located.
+Replace path-to with the path where the project is located.
 
 -	Compile the program:
 ```
@@ -155,7 +155,7 @@ gcc -o prog main.c
 ```
 cd path-toSimple-Expression-Converter
 ```
-	Replace path-to with the path where the project is located.
+Replace path-to with the path where the project is located.
 
 -	Compile the program:
 ```
@@ -203,7 +203,7 @@ prog "[expression]" [pre|in|post] [-e]
 ```
 ./prog "3+4*2" post
 ```
-	Remove ./ if on Windows.
+Remove ./ if on Windows.
 
 -	Output:
 
@@ -218,7 +218,7 @@ prog "[expression]" [pre|in|post] [-e]
 ```
 ./prog "(a+b)*c" pre
 ```
-	Remove ./ if on Windows.
+Remove ./ if on Windows.
 
 -	Output:
 
@@ -233,7 +233,7 @@ prog "[expression]" [pre|in|post] [-e]
 ```
 ./prog "3+(4*2)" in -e
 ```
-	Remove ./ if on Windows.
+Remove ./ if on Windows.
 
 -	Output:
 
@@ -252,7 +252,7 @@ or
 ```
 ./prog --help
 ```
-	Remove ./ if on Windows.
+Remove ./ if on Windows.
 
 -	Output:
 
@@ -281,7 +281,7 @@ Usage: ./prog "expression" [pre|in|post] [-e]
 ```
 ./prog --guide
 ```
-	Remove ./ if on Windows.
+Remove ./ if on Windows.
 
 -	Output:
 
