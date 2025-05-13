@@ -69,7 +69,7 @@ gcc --version
 
 -   Under System variables, find and edit Path, then add:
 ```
-C:msys64mingw64bin
+C:\msys64\mingw64\bin
 ```
 
 ### Git Setup
@@ -140,7 +140,7 @@ To do that, Cmd + Space to open Spotlight search, then type "terminal" and press
 #### On Linux and MacOS:  
 -	Navigate to the project's directory:
 ```
-cd path-toSimple-Expression-Converter
+cd path-to/Simple-Expression-Converter
 ```
 Replace path-to with the path where the project is located.
 
@@ -153,7 +153,7 @@ gcc -o prog main.c
 
 -	Navigate to the project's directory:
 ```
-cd path-toSimple-Expression-Converter
+cd path-to\Simple-Expression-Converter
 ```
 Replace path-to with the path where the project is located.
 
@@ -171,12 +171,14 @@ gcc -o prog.exe main.c
 ```
 ./prog "[expression]" [pre|in|post] [-e]
 ```
+The double quotes (" ") are optional.
 
 #### On Windows:  
 -	Execution of program:
 ```
 prog "[expression]" [pre|in|post] [-e]
 ```
+The double quotes (" ") are optional.
 
 #### Arguments:
 
