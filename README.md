@@ -1,6 +1,3 @@
-# Simple Expression Converter in C
-A program that converts an arithmetic expression from one notation to another and evaluates the given expression.
-
 <h1 align="center">Simple Expression Converter in C</h1>
 
 <p align="center">A program that converts an arithmetic expression from one notation to another by transforming the expression as a binary expression tree and
