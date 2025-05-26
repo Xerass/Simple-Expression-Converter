@@ -166,7 +166,16 @@ gcc -o prog.exe main.c
 
 ## How to run the program?
 
+#### Method 1: Adequate Execution
+-	Requires changing the directory into the program's path everytime a new terminal is open.
+
 #### On Linux and MacOS:  
+-	Navigate to the project's directory:
+```
+cd path-to/Simple-Expression-Converter
+```
+Replace path-to with the path where the project is located.
+
 -	Execution of program:
 ```
 ./prog "[expression]" [pre|in|post] [-e]
@@ -174,6 +183,51 @@ gcc -o prog.exe main.c
 The double quotes (" ") are optional.
 
 #### On Windows:  
+-	Navigate to the project's directory:
+```
+cd path-to\Simple-Expression-Converter
+```
+Replace path-to with the path where the project is located.
+
+-	Execution of program:
+```
+prog "[expression]" [pre|in|post] [-e]
+```
+The double quotes (" ") are optional.
+
+#### Method 2: Adding the Program's Path to System PATH Environment Variable
+-	The program can run from any directory in the terminal - no need to change the directory which makes for a cleaner workflow.
+  Ideal for custom CLI programs such as this one.
+
+#### On Linux and MacOS: 
+-   Move the executable to a directory already in your PATH (like /usr/local/bin)
+```
+sudo mv prog /usr/local/bin/
+```
+
+-   Now you can run the program from anywhere
+
+-	Execution of program:
+```
+./prog "[expression]" [pre|in|post] [-e]
+```
+The double quotes (" ") are optional.
+
+#### On Windows:
+-   Search for "Environment Variables in Start Menu
+
+-   Click Edit the system environment variables
+
+-   Under System Properties → Advanced → Environment Variables
+
+-   Under System variables, find and edit Path, then add:
+```
+path-to\Simple-Expression-Converter
+```
+Replace path-to with the path where the project is located.
+
+-   Now you can run the program from anywhere and without changing the directory every time a new terminal is open
+
 -	Execution of program:
 ```
 prog "[expression]" [pre|in|post] [-e]
